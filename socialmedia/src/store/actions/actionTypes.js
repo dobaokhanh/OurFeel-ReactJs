@@ -1,0 +1,20 @@
+export const LIKE_HANDLER = 'LIKE_HANDLER';
+
+export const FETCH_HOME_START = 'FETCH_HOME_START';
+export const FETCH_HOME_SUCCESS = 'FETCH_HOME_SUCCESS';
+export const FETCH_HOME_FAIL = 'FETCH_HOME_FAIL';
+
+export const AUTH_START = 'AUTH_START';
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export const AUTH_FAIL = 'AUTH_FAIL';
+export const SET_AUTH_REDIRECT_PATH = 'SET_AUTH_REDIRECT_PATH';
+
+export const SIGNUP_START = 'SIGNUP_START';
+export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
+export const SIGNUP_FAIL = 'SIGNUP_FAIL';
+
+export const LOGOUT = 'LOGOUT';
+
+export const GET_USER_DATA_START = 'GET_USER_DATA_START';
+export const GET_USER_DATA_SUCCESS = 'GET_USER_DATA_SUCCESS';
+export const GET_USER_DATA_FAIL = 'GET_USER_DATA_FAIL';

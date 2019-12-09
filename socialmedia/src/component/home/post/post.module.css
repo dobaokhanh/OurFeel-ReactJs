@@ -1,0 +1,16 @@
+.img{
+   min-width: 200;
+}
+
+.card {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.mediaBody{
+    padding: 30px;
+}
+
+.showNo {
+    float: right;
+}
