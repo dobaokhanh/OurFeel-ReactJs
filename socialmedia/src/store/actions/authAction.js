@@ -49,17 +49,18 @@ export const auth = (email, password) => {
         }
         axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDEslbGxXqFIDshVngmyWuidYQFr40MZLg', authData)
             .then(res => {
-                const expirationDate = new Date(new Date().getTime() + expiresIn);
+                const expirationDate = new Date(new Date().getTime() + res.data.expiresIn*1000);
                 localStorage.setItem('token', res.data.idToken);
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId', res.data.localId);
                 dispatch(authSuccess(res.data.idToken, res.data.localId));
-                dispatch(checkTimeOut(expirationDate));
+                dispatch(checkTimeOut(res.data.expiresIn));
             })
             .catch(err => {
-                dispatch(authFail(err));
+                console.log(err);
+                //dispatch(authFail(err.response.data.error));
             });
-    }
+    };
 };
 
 export const authCheckState = () => {
@@ -73,7 +74,7 @@ export const authCheckState = () => {
             } else {
                 const userId = localStorage.getItem('userId');
                 dispatch(authSuccess(token, userId));
-                dispatch(checkTimeOut(expirationDate.getTime() - new Date().getTime()) / 1000);
+                dispatch(checkTimeOut((expirationDate.getTime() - new Date().getTime()) / 1000));
             }
         }
     };

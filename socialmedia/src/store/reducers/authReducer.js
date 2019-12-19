@@ -6,7 +6,7 @@ const initialState = {
     userId: null,
     error: null,
     loading: false,
-    authRedirectPath: '/'
+    authRedirectPath: null
 };
 
 const authStart = (state, action) => {
@@ -15,10 +15,11 @@ const authStart = (state, action) => {
 
 const authSuccess = (state, action) => {
     return updateObject(state, {
-        token: action.idToken,
+        token: action.token,
         userId: action.userId,
         error: null,
-        loading: false
+        loading: false,
+        authRedirectPath: '/home'
     });
 };
 
@@ -30,7 +31,32 @@ const authFail = (state, action) => {
 };
 
 const authLogout = (state, action) => {
-    return updateObject(state, { authRedirectPath: action.path });
+    return updateObject(state, { 
+        token: null,
+        userId: null,
+        authRedirectPath: action.path 
+    });
+};
+
+const signupStart = (state, action) => {
+    return updateObject(state, { error: null, loading: true });
+}
+
+const signupSuccess = (state, action) => {
+    return updateObject(state, {
+        token: action.idToken,
+        userId: action.userId,
+        error: null,
+        loading: false,
+        authRedirectPath: '/home'
+    });
+};
+
+const signupFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error,
+        loading: false
+    });
 };
 
 const reducer = (state = initialState, action) => {
@@ -38,6 +64,9 @@ const reducer = (state = initialState, action) => {
         case actionTypes.AUTH_START: return authStart(state, action);
         case actionTypes.AUTH_SUCCESS: return authSuccess(state, action);
         case actionTypes.AUTH_FAIL: return authFail(state, action);
+        case actionTypes.SIGNUP_START: return signupStart(state, action);
+        case actionTypes.SIGNUP_SUCCESS: return signupSuccess(state, action);
+        case actionTypes.SIGNUP_FAIL: return signupFail(state, action);
         case actionTypes.LOGOUT: return authLogout(state, action);
         default: return state;
     }

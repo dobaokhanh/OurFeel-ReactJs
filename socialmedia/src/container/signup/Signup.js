@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import Input from '../../component/UI/Input/Input';
 import Button from '../../component/UI/Button/Button';
+import Spinner from '../../component/UI/Spinner/Spinner';
 import classes from './signup.module.css';
-import { updateObject } from '../../shared/Utility';
-import * as actions from '../../store/actions/Index';
+import { updateObject } from '../../shared/utility';
+import * as actions from '../../store/actions/index';
 
 class Signup extends Component {
 
@@ -52,7 +54,7 @@ class Signup extends Component {
             email: this.state.controls.email.value,
             password: this.state.controls.password.value,
         };
-        this.props.onSignup(newUserData, this.props.history);
+        this.props.onSignup(newUserData);
     }
 
     render() {
@@ -74,22 +76,39 @@ class Signup extends Component {
                 changed={(event) => this.inputChangedHandler(event, inputElement.id)} />
         ));
 
+        if (this.props.loading) signupForm = <Spinner />;
+
+        let errorMessage = null;
+        if (this.props.error)  errorMessage = (<p>{this.props.error.message}</p>);
+        let authRedirect = null;
+        if (this.props.authRedirectPath)   authRedirect = < Redirect to={this.props.authRedirectPath} />
+
         return (
             <Container className={classes.formContent}>
+                {errorMessage}
+                {authRedirect}
                 <form onSubmit={this.submitHandler}>
                     <h1>Sign Up</h1>
                     {signupForm}
                     <Button value='Sign up' />
                 </form>
             </Container>
-        )
-    }
-}
+        );
+    };
+};
+
+const mapStateToProps = state => {
+    return {
+        loading: state.auth.loading,
+        error: state.auth.error,
+        authRedirectPath: state.auth.authRedirectPath
+    };
+};
 
 const mapDispatchToProps = dispatch => {
     return {
         onSignup : (newUserData) => dispatch(actions.signUp(newUserData))
-    }
-}
+    };
+};
 
-export default connect(null, mapDispatchToProps)(Signup);
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);

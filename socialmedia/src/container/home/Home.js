@@ -4,41 +4,45 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { connect } from 'react-redux';
 
-import { updateObject } from '../../shared/Utility';
+import { updateObject } from '../../shared/utility';
 import Post from '../../component/home/post/Post';
-
+import Profile from '../../component/home/profile/Profile';
 
 class Home extends Component {
 
+    componentDidMount() {
+
+    }
+
     likeClickedHandler = () => {
-        let updatedPost = '';
+        let updatedPost = null;
         if (!this.state.post.isLike) {
             updatedPost = updateObject(this.state.post, {
                 interact: {
-                    likeCount : this.state.post.interact.likeCount + 1,
+                    likeCount: this.state.post.interact.likeCount + 1,
                     commentCount: this.state.post.interact.commentCount
                 },
-                isLike : true 
+                isLike: true
             });
         } else {
             updatedPost = updateObject(this.state.post, {
                 interact: {
-                    likeCount : this.state.post.interact.likeCount - 1,
+                    likeCount: this.state.post.interact.likeCount - 1,
                     commentCount: this.state.post.interact.commentCount
                 },
                 isLike: false
             });
         }
-        this.setState({ post : updatedPost });
+        this.setState({ post: updatedPost });
     }
 
     render() {
         dayjs.extend(relativeTime);
         return (
             <Container>
-               {/* <Row>
-                   <Col xs={12} md={8}> 
-                        <Post
+                <Row>
+                    <Col xs={12} md={8} />
+                    {/* <Post
                             name={this.props.post.name}
                             avatar={this.props.post.avatar}
                             content={this.props.post.content}
@@ -46,18 +50,15 @@ class Home extends Component {
                             like={this.props.post.interact.likeCount}
                             comment={this.props.post.interact.commentCount}
                             isLike={this.props.post.isLike}
-                            likeClicked={this.likeClickedHandler} /> </Col>
-                   <Col xs={12} md={4}> Profile </Col>
-               </Row> */}
+                            likeClicked={this.likeClickedHandler} /> </Col> */}
+                    <Col xs={12} md={4}>
+                        <Profile />
+                    </Col>
+                </Row>
             </Container>
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        post: state.post.posts
-    }
-}
-
-export default connect(mapStateToProps)(Home);
+ 
+export default Home;

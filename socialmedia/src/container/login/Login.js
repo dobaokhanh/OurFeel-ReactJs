@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import classes from './login.module.css';
 import Input from '../../component/UI/Input/Input';
 import Button from '../../component/UI/Button/Button';
-import { updateObject } from '../../shared/Utility';
-import * as actions from '../../store/actions/Index';
+import Spinner from '../../component/UI/Spinner/Spinner';
+import { updateObject } from '../../shared/utility';
+import * as actions from '../../store/actions/index';
 
 class Login extends Component {
 
@@ -29,28 +31,6 @@ class Login extends Component {
             }
         }
     };
-
-    componentDidMount() {
-
-    }
-
-    clickedHandler = (event) => {
-        event.preventDefault();
-        const userData = {
-            email: this.state.controls.email.value,
-            password: this.state.controls.password.value
-        };
-        axios.post('/login', userData)
-            .then(res => {
-                console.log(res);
-                this.props.history.push('/');
-            })
-            .catch(err => {
-                console.log(err);
-            });
-
-
-    }
 
     inputChangeHandler = (event, controlName) => {
         const updatedControls = updateObject(this.state.controls, {
@@ -84,9 +64,25 @@ class Login extends Component {
                 changed={(event) => this.inputChangeHandler(event, inputElement.id)} />
         ));
 
+        if (this.props.loading) {
+            loginForm = <Spinner />;
+        }
+
+        let authRedirect = null;
+        if (this.props.isAuthenticated) {
+            authRedirect = <Redirect to={this.props.authRedirectPath}/>
+        }
+
+        let errorMessage = null;
+
+        if (this.props.error) {
+            errorMessage = (<p>{this.props.error.message}</p>);
+        }
 
         return (
             <Container className={classes.formContent}>
+                {authRedirect}
+                {errorMessage}
                 <form onSubmit={this.submitHanlder}>
                     <h1>Login</h1>
                     {loginForm}
@@ -101,7 +97,8 @@ const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
         error: state.auth.error,
-        authRedirectpath: state.auth.authRedirectpath
+        isAuthenticated: state.auth.token !== null,
+        authRedirectPath: state.auth.authRedirectPath
     }
 }
 

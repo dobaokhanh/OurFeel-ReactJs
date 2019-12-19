@@ -9,14 +9,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
 import App from './App';
-import HomeReducer from './store/reducers/HomeBuilderReducer';
 import AuthReducer from './store/reducers/authReducer';
+import UserReducer from './store/reducers/userReducer';
 import * as serviceWorker from './serviceWorker';
 
 const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
 const rootReducer = combineReducers({
-    auth: AuthReducer
+    auth: AuthReducer,
+    user: UserReducer
 })
 
 const store = createStore(rootReducer, composeEnhancers(
