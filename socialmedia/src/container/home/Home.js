@@ -4,61 +4,65 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { connect } from 'react-redux';
 
-import { updateObject } from '../../shared/utility';
 import Post from '../../component/home/post/Post';
+import Spinner from '../../component/UI/Spinner/Spinner';
+import * as actions from '../../store/actions/index';
 import Profile from '../../component/home/profile/Profile';
 
 class Home extends Component {
 
     componentDidMount() {
-
-    }
-
-    likeClickedHandler = () => {
-        let updatedPost = null;
-        if (!this.state.post.isLike) {
-            updatedPost = updateObject(this.state.post, {
-                interact: {
-                    likeCount: this.state.post.interact.likeCount + 1,
-                    commentCount: this.state.post.interact.commentCount
-                },
-                isLike: true
-            });
-        } else {
-            updatedPost = updateObject(this.state.post, {
-                interact: {
-                    likeCount: this.state.post.interact.likeCount - 1,
-                    commentCount: this.state.post.interact.commentCount
-                },
-                isLike: false
-            });
-        }
-        this.setState({ post: updatedPost });
+        this.props.onFetchPosts();
     }
 
     render() {
         dayjs.extend(relativeTime);
+
+        let postsFetched = <Spinner />
+
+        if (!this.props.loading) {
+            this.props.posts.sort((a, b) => {
+                return dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf();
+            });
+            postsFetched = this.props.posts.map(post => (
+                <Post
+                    key={post.postId}
+                    postId={post.postId}
+                    name={post.userName}
+                    body={post.body}
+                    createdAt={dayjs(post.createdAt).fromNow()}
+                    likeCount={post.likeCount}
+                    commentCount={post.commentCount}
+                />
+            ));
+        }
+
         return (
             <Container>
                 <Row>
-                    <Col xs={12} md={8} />
-                    {/* <Post
-                            name={this.props.post.name}
-                            avatar={this.props.post.avatar}
-                            content={this.props.post.content}
-                            createAt={dayjs(this.props.post.createAt).fromNow()}
-                            like={this.props.post.interact.likeCount}
-                            comment={this.props.post.interact.commentCount}
-                            isLike={this.props.post.isLike}
-                            likeClicked={this.likeClickedHandler} /> </Col> */}
+                    <Col xs={12} md={8} >
+                        {postsFetched}
+                    </Col>
                     <Col xs={12} md={4}>
                         <Profile />
                     </Col>
                 </Row>
             </Container>
-        )
-    }
+        );
+    };
 }
 
- 
-export default Home;
+const mapStateToProps = state => {
+    return {
+        posts: state.data.posts,
+        loading: state.data.loading
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onFetchPosts: () => dispatch(actions.fetchPosts())
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

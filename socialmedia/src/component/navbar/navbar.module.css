@@ -6,3 +6,8 @@
 .nav {
     margin: auto;
 }
+
+.button {
+    cursor: pointer;
+    margin: 10px 15px 10px 15px;
+}

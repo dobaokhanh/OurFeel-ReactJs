@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 
 import Input from '../../component/UI/Input/Input';
 import Button from '../../component/UI/Button/Button';
@@ -14,7 +13,7 @@ class Signup extends Component {
 
     state = {
         controls: {
-            name: {
+            userName: {
                 inputConfig: {
                     type: 'text',
                     placeholder: 'Enter Your Name'
@@ -50,7 +49,7 @@ class Signup extends Component {
     submitHandler = (event) => {
         event.preventDefault();
         const newUserData = {
-            name: this.state.controls.name.value,
+            userName: this.state.controls.userName.value,
             email: this.state.controls.email.value,
             password: this.state.controls.password.value,
         };
@@ -80,13 +79,10 @@ class Signup extends Component {
 
         let errorMessage = null;
         if (this.props.error)  errorMessage = (<p>{this.props.error.message}</p>);
-        let authRedirect = null;
-        if (this.props.authRedirectPath)   authRedirect = < Redirect to={this.props.authRedirectPath} />
 
         return (
             <Container className={classes.formContent}>
                 {errorMessage}
-                {authRedirect}
                 <form onSubmit={this.submitHandler}>
                     <h1>Sign Up</h1>
                     {signupForm}
@@ -101,7 +97,6 @@ const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
         error: state.auth.error,
-        authRedirectPath: state.auth.authRedirectPath
     };
 };
 

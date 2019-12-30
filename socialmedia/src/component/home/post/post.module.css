@@ -14,3 +14,11 @@
 .showNo {
     float: right;
 }
+
+.createdAt {
+    font-size: small;
+}
+
+.delete {
+    float: right;
+}

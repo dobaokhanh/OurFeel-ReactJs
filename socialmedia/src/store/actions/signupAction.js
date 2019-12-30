@@ -45,14 +45,20 @@ export const signUp = (userSignUpData) => {
 export const addNewUserToDb = (userSignUpData, resData) => {
     return dispatch => {
         const newUserData = {
-            userId: resData.localId,
-            userName: userSignUpData.name,
-            email: userSignUpData.email,
-            createdAt: new Date()
-        }
-        axiosInstance.post('/users.json', newUserData)
+            credentials: {
+                userId: resData.localId,
+                userName: userSignUpData.userName,
+                email: userSignUpData.email,
+                createdAt: new Date(),
+                bio: '',
+                location: ''
+            }
+        };
+
+        axiosInstance.post('/users.json?auth=' + resData.idToken, newUserData)
             .then(res => {
-                const expirationDate = new Date(new Date().getTime() + resData.expiresIn*1000);
+                console.log(res);
+                const expirationDate = new Date(new Date().getTime() + resData.expiresIn * 1000);
                 localStorage.setItem('token', resData.idToken);
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId', resData.localId);
@@ -61,7 +67,7 @@ export const addNewUserToDb = (userSignUpData, resData) => {
             })
             .catch(err => {
                 console.log(err);
-                dispatch(signUpFail(err.response.data.error));
+                dispatch(signUpFail(err));
             });
     };
 };

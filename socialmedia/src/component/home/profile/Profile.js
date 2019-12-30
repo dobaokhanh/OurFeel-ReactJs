@@ -1,35 +1,59 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import dayjs from 'dayjs';
 
-import { Card, Image } from 'react-bootstrap';
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaMapMarked, FaRegCalendarAlt, FaSignOutAlt, FaUserEdit } from 'react-icons/fa';
-import BurgerLogo from '../../../assets/images/burger-logo.png';
 import Spinner from '../../../component/UI/Spinner/Spinner';
+import EditProfile from './edit_profile/EditProfile';
 import classes from './profile.module.css';
 import Auxiliary from '../../../hoc/auxiliary/Auxiliary';
 import * as actions from '../../../store/actions/index';
 
 class Profile extends Component {
 
-    componentDidMount() {
-        this.props.onInitUserData(this.props.token, this.props.userId);
+    state = {
+        setEditProfileShow: false
     }
 
-    render() {
+    componentDidMount() {
+        this.props.onInitUserData(this.props.token, this.props.userId);
+    };
 
+    signoutClickedHandler = () => {
+        this.props.onLogoutUser();
+    };
+
+    render() {
         let profile = <Spinner />;
 
-        if (this.props.userData) {
+        if (this.props.credentials) {
             profile = (
                 <Card className={classes.card}>
-                    <Image roundedCircle className={classes.cardImg} src={BurgerLogo}></Image>
+                    <Card.Header>
+                        <Card.Title>{this.props.credentials.userName}</Card.Title>
+                    </Card.Header>
                     <Card.Body>
-                        <Card.Title>{this.props.userData.userName}</Card.Title>
-                        <Card.Text>{this.props.userData.bio}</Card.Text>
-                        <Card.Text><FaMapMarked />  {this.props.userData.location}</Card.Text>
-                        <Card.Text><FaRegCalendarAlt /> Joined {this.props.userData.createdAt}</Card.Text>
-                        <FaSignOutAlt className={classes.signout} onClick={this.signoutClickedHandler} />
-                        <FaUserEdit className={classes.edit} />
+                        <Card.Text>{this.props.credentials.bio}</Card.Text>
+                        <Card.Text><FaMapMarked />  {this.props.credentials.location}</Card.Text>
+                        <Card.Text><FaRegCalendarAlt /> Joined {dayjs(this.props.credentials.createdAt).format('DD MMM YYYY')}</Card.Text>
+                        <OverlayTrigger
+                            placement='bottom'
+                            overlay={
+                                <Tooltip><strong>Logout</strong></Tooltip>
+                            }>
+                            <FaSignOutAlt className={classes.signout} onClick={this.signoutClickedHandler} />
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                            placement='bottom'
+                            overlay={
+                                <Tooltip><strong>Edit</strong></Tooltip>
+                            }>
+                            <FaUserEdit className={classes.edit} onClick={() => this.setState({ setEditProfileShow: true })} />
+                        </OverlayTrigger>
+                        <EditProfile
+                            show={this.state.setEditProfileShow}
+                            onHide={() => this.setState({ setEditProfileShow: false })} />
                     </Card.Body>
                 </Card>
             );
@@ -37,7 +61,6 @@ class Profile extends Component {
 
         return (
             <Auxiliary>
-
                 {profile}
             </Auxiliary>
         );
@@ -47,7 +70,7 @@ class Profile extends Component {
 
 const mapStateToProps = state => {
     return {
-        userData: state.user.userData,
+        credentials: state.user.credentials,
         loading: state.user.loading,
         token: state.auth.token,
         userId: state.auth.userId
@@ -56,7 +79,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onInitUserData: (token, userId) => dispatch(actions.getUserData(token, userId))
+        onInitUserData: (token, userId) => dispatch(actions.getUserData(token, userId)),
+        onLogoutUser: () => dispatch(actions.logout())
     };
 };
 

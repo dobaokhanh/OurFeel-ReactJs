@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
-import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 

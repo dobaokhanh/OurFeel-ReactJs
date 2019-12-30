@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter, Route, Switch, Redirect} from 'react-router-dom';
 import { connect } from 'react-redux';
-import Layout from './hoc/layout/Layout';
+import NavBar from './component/navbar/Navbar';
 import Login from './container/login/Login';
 import Home from './container/home/Home';
 import Signup from './container/signup/Signup';
@@ -18,8 +18,8 @@ class App extends Component{
 
     let routes = (
       <Switch>
-          <Route exact path='/' component={Login} />
           <Route path='/signup' component={Signup} />
+          <Route exact path='/' component={Login} />
           <Redirect to='/' />
       </Switch>
     );
@@ -35,7 +35,7 @@ class App extends Component{
 
     return (
       <div className="App">
-        <Layout />
+        <NavBar />
         {routes}
       </div>
     );

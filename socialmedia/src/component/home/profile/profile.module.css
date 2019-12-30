@@ -10,8 +10,10 @@
 
 .signout {
     float: left;
+    cursor: pointer;
 }
 
 .edit {
     float: right;
+    cursor: pointer;
 }

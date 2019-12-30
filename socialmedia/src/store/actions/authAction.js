@@ -26,6 +26,7 @@ export const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('userId');
+    localStorage.removeItem('uId');
     return {
         type: actionTypes.LOGOUT
     };
@@ -57,8 +58,7 @@ export const auth = (email, password) => {
                 dispatch(checkTimeOut(res.data.expiresIn));
             })
             .catch(err => {
-                console.log(err);
-                //dispatch(authFail(err.response.data.error));
+                dispatch(authFail(err));
             });
     };
 };

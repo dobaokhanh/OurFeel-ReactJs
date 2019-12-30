@@ -5,9 +5,19 @@ export {
 export {
     auth,
     authCheckState,
-    setAuthRedirectPath
+    setAuthRedirectPath,
+    logout
 } from './authAction'
 
 export {
-    getUserData
+    getUserData,
+    saveUserData,
+    likePost,
+    unlikePost
 } from './userAction';
+
+export {
+    fetchPosts,
+    addNewPost,
+    likeCountChange
+} from './dataAction';
