@@ -57,7 +57,6 @@ export const addNewUserToDb = (userSignUpData, resData) => {
 
         axiosInstance.post('/users.json?auth=' + resData.idToken, newUserData)
             .then(res => {
-                console.log(res);
                 const expirationDate = new Date(new Date().getTime() + resData.expiresIn * 1000);
                 localStorage.setItem('token', resData.idToken);
                 localStorage.setItem('expirationDate', expirationDate);
@@ -66,7 +65,6 @@ export const addNewUserToDb = (userSignUpData, resData) => {
                 dispatch(checkTimeOut(resData.expiresIn));
             })
             .catch(err => {
-                console.log(err);
                 dispatch(signUpFail(err));
             });
     };

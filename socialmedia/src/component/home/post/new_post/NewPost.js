@@ -20,6 +20,7 @@ class NewPost extends Component {
         const newPostData = {
             body: this.state.newpost,
             userName: this.props.credentials.userName,
+            userId: this.props.credentials.userId,
             createdAt: new Date(),
             commentCount: 0,
             likeCount: 0

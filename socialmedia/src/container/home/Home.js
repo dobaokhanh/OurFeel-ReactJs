@@ -28,6 +28,7 @@ class Home extends Component {
                 <Post
                     key={post.postId}
                     postId={post.postId}
+                    userId={post.userId}
                     name={post.userName}
                     body={post.body}
                     createdAt={dayjs(post.createdAt).fromNow()}

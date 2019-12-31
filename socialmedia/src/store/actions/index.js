@@ -19,5 +19,9 @@ export {
 export {
     fetchPosts,
     addNewPost,
-    likeCountChange
+    likeCountChange,
+    deletePost,
+    addNewComment,
+    commentCountChange,
+    fetchComments
 } from './dataAction';

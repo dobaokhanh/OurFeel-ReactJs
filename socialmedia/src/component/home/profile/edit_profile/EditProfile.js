@@ -43,7 +43,7 @@ class EditProfile extends Component {
         for (let key in this.state.controls) {
             editedInformation[key] = this.state.controls[key].value;
         }
-        this.props.onSaveUserData(this.props.token, this.props.userId, editedInformation);
+        this.props.onSaveUserData(this.props.token, this.props.dataId, editedInformation);
         this.props.onHide();
     };
 
@@ -99,6 +99,7 @@ class EditProfile extends Component {
 const mapStateToProps = state => {
     return {
         credentials: state.user.credentials,
+        dataId: state.user.dataId,
         token: state.auth.token,
         userId: state.auth.userId
     };
@@ -106,7 +107,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onSaveUserData: (token, userId, userData) => dispatch(actions.saveUserData(token, userId, userData)),
+        onSaveUserData: (token, dataId, userData) => dispatch(actions.saveUserData(token, dataId, userData)),
         onGetUserData: (token, userId) => dispatch(actions.getUserData(token, userId))
     }
 }

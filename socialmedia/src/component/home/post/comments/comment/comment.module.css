@@ -1,0 +1,8 @@
+.card {
+    max-height: 10%;
+    margin: 2% auto 2% auto;
+}
+
+.createdAt {
+    font-size: small;
+}

@@ -29,12 +29,15 @@ export const getUserData = (token, userId) => {
             .then(res => {
                 let userData = null;
                 for (let key in res.data) {
-                    userData = { ...res.data[key] };
-                    localStorage.setItem('uId', key);
+                    userData = {
+                        ...res.data[key],
+                        dataId: key
+                    };
                 }
                 dispatch(getUserDataSuccess(userData));
             })
             .catch(err => {
+                console.log(err);
                 dispatch(getUserDataFail(err));
             });
     };
@@ -60,13 +63,11 @@ export const saveUserDataFail = (error) => {
     };
 };
 
-export const saveUserData = (token, userData) => {
+export const saveUserData = (token, dataId, userData) => {
     return dispatch => {
         dispatch(saveUserDataStart());
-        token = localStorage.getItem('token');
-        const uId = localStorage.getItem('uId');
-        const queryParam = '?auth=' + token;
-        axios.put('/users/' + uId + '/credentials.json' + queryParam, userData)
+        const queryParam = '?auth=' + localStorage.getItem('token');
+        axios.put('/users/' + dataId + '/credentials.json' + queryParam, userData)
             .then(res => {
                 dispatch(saveUserDataSuccess(userData));
             })
@@ -90,15 +91,13 @@ export const likePostFail = (error) => {
     };
 };
 
-export const likePost = (postId) => {
+export const likePost = (postId, dataId) => {
     return dispatch => {
-        const token = localStorage.getItem('token');
-        const uId = localStorage.getItem('uId');
-        const queryParam = '?auth=' + token;
         const postLiked = {
             postId: postId
         };
-        axios.post('/users/' + uId + '/likes.json' + queryParam, postLiked)
+        const queryParam = '?auth=' + localStorage.getItem('token');
+        axios.post('/users/' + dataId + '/likes.json' + queryParam, postLiked)
             .then(res => {
                 const like = {
                     name: res.data.name,
@@ -126,12 +125,10 @@ export const unlikePostFail = (error) => {
     };
 };
 
-export const unlikePost = (name) => {
+export const unlikePost = (name, dataId) => {
     return dispatch => {
-        const token = localStorage.getItem('token');
-        const uId = localStorage.getItem('uId');
-        const queryParam = '?auth=' + token;
-        axios.delete('/users/' + uId + '/likes/' + name + '.json' + queryParam)
+        const queryParam = '?auth=' + localStorage.getItem('token');
+        axios.delete('/users/' + dataId + '/likes/' + name + '.json' + queryParam)
             .then(
                 dispatch(unlikePostSuccess(name))
             )

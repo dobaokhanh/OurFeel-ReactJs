@@ -2,6 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
 const initialState = {
+    dataId: null,
     credentials: null,
     likes: [],
     error: null,
@@ -14,13 +15,16 @@ const getUserDataStart = (state, action) => {
 
 const getUserDataSuccess = (state, action) => {
     let likes = [];
-    for (let key in action.userData.likes) {
-        likes.push({
-            name: key,
-            postId: action.userData.likes[key].postId
-        });
+    if (action.userData.likes) {
+        for (let key in action.userData.likes) {
+            likes.push({
+                name: key,
+                postId: action.userData.likes[key].postId
+            });
+        }
     }
     return updateObject(state, {
+        dataId: action.userData.dataId,
         credentials: action.userData.credentials,
         likes: likes,
         error: null,
