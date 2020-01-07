@@ -24,8 +24,7 @@ export const fetchPostsFail = (error) => {
 export const fetchPosts = () => {
     return dispatch => {
         dispatch(fetchPostsStart());
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.get('/posts.json' + queryParam)
+        axios.get('/posts.json' )
             .then(res => {
                 let postsFetched = [];
                 for (let key in res.data) {
@@ -58,8 +57,7 @@ export const addNewPostFail = (error) => {
 
 export const addNewPost = (newPostData) => {
     return dispatch => {
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.post('/posts.json' + queryParam, newPostData)
+        axios.post('/posts.json', newPostData)
             .then(res => {
                 const newPost = {
                     ...newPostData,
@@ -90,8 +88,7 @@ export const likeCountChangeFail = (error) => {
 
 export const likeCountChange = (postId, likeCount) => {
     return dispatch => {
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.put('/posts/' + postId + '/likeCount.json' + queryParam, likeCount)
+        axios.put('/posts/' + postId + '/likeCount.json', likeCount)
             .then((
                 dispatch(likeCountChangeSuccess(postId, likeCount))
             ))
@@ -117,8 +114,7 @@ export const deletePostFail = (error) => {
 
 export const deletePost = (postId) => {
     return dispatch => {
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.delete('/posts/' + postId + '.json' + queryParam)
+        axios.delete('/posts/' + postId + '.json' )
             .then(
                 dispatch(deletePostSuccess(postId))
             )
@@ -126,6 +122,12 @@ export const deletePost = (postId) => {
                 dispatch(deletePostFail(err));
             });
 
+    };
+};
+
+export const addNewCommentStart = () => {
+    return {
+        type: actionTypes.ADD_NEW_COMMENT_START
     };
 };
 
@@ -145,8 +147,8 @@ export const addNewCommentFail = (error) => {
 
 export const addNewComment = (postId, comment) => {
     return dispatch => {
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.post('/comments/' + postId + '.json' + queryParam, comment)
+        dispatch(addNewCommentStart());
+        axios.post('/comments/' + postId + '.json' , comment)
             .then(res => {
                 const newComment = {
                     ...comment,
@@ -178,12 +180,17 @@ export const commentCountChangeFail = (error) => {
 
 export const commentCountChange = (postId, commentCount) => {
     return dispatch => {
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.put('/posts/' + postId + '/commentCount.json' + queryParam, commentCount)
+        axios.put('/posts/' + postId + '/commentCount.json' , commentCount)
             .then(dispatch(commentCountChangeSuccess(postId, commentCount)))
             .catch(err => {
                 dispatch(commentCountChangeFail(err));
             });
+    };
+};
+
+export const fetchCommentsStart = () => {
+    return {
+        type: actionTypes.FETCH_COMMENTS_START
     };
 };
 
@@ -203,8 +210,8 @@ export const fetchCommentsFail = (error) => {
 
 export const fetchComments = (postId) => {
     return dispatch => {
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.get('/comments/' + postId +'.json' + queryParam)
+        dispatch(fetchCommentsStart());
+        axios.get('/comments/' + postId +'.json')
             .then(res => {
                 let comments = [];
                 for (let key in res.data) {
@@ -220,3 +227,12 @@ export const fetchComments = (postId) => {
             });
     };
 };
+
+export const clearCommentSuccess = () => {
+    return {
+        type: actionTypes.CLEAR_COMMENTS
+    };
+};
+
+export const clearComment = () => (dispatch) => dispatch(clearCommentSuccess());
+    

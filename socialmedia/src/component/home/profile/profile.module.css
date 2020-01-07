@@ -2,12 +2,6 @@
     text-align: center;
 }
 
-.cardImg {
-    margin: auto;
-    width: 80px;
-    height: 70px;
-}
-
 .signout {
     float: left;
     cursor: pointer;

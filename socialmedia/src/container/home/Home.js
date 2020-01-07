@@ -3,7 +3,9 @@ import { Container, Row, Col } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { connect } from 'react-redux';
+import axios from '../../axios-orders';
 
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Post from '../../component/home/post/Post';
 import Spinner from '../../component/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
@@ -12,15 +14,17 @@ import Profile from '../../component/home/profile/Profile';
 class Home extends Component {
 
     componentDidMount() {
-        this.props.onFetchPosts();
+        this.props.onFetchPosts(this.props.token);
     }
 
     render() {
         dayjs.extend(relativeTime);
 
-        let postsFetched = <Spinner />
+        let postsFetched = <Spinner />;
 
-        if (!this.props.loading) {
+        if (!this.props.posts) postsFetched = null;
+
+        if (this.props.posts) {
             this.props.posts.sort((a, b) => {
                 return dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf();
             });
@@ -55,8 +59,8 @@ class Home extends Component {
 
 const mapStateToProps = state => {
     return {
-        posts: state.data.posts,
-        loading: state.data.loading
+        token: state.auth.token,
+        posts: state.data.posts
     };
 };
 
@@ -66,4 +70,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Home, axios));

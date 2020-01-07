@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import { Navbar, Nav, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { FaPlus, FaHome, FaBell } from 'react-icons/fa';
+import { FaPlus, FaHome } from 'react-icons/fa';
 
 import Auxiliary from '../../hoc/auxiliary/Auxiliary';
 import NewPost from '../../component/home/post/new_post/NewPost';
+import Notification from '../../component/home/notification/Notification';
 import classes from './navbar.module.css';
 
 class NavBar extends Component {
@@ -20,7 +21,6 @@ class NavBar extends Component {
             <Navbar className={classes.navbar}>
                 <Nav className={classes.nav}>
                     <Nav.Link as={Link} to='/'>Login</Nav.Link>
-                    <Nav.Link as={Link} to='/home'>Home</Nav.Link>
                     <Nav.Link as={Link} to='/signup'>Sign Up</Nav.Link>
                 </Nav>
             </Navbar>
@@ -45,15 +45,9 @@ class NavBar extends Component {
                             overlay={
                                 <Tooltip><strong>Home</strong></Tooltip>
                             }>
-                            <FaHome className={classes.button} />
+                            <Link to='/home'><FaHome className={classes.button} /></Link>
                         </OverlayTrigger>
-                        <OverlayTrigger
-                            placement='bottom'
-                            overlay={
-                                <Tooltip><strong>Notifications</strong></Tooltip>
-                            }>
-                            <FaBell className={classes.button} />
-                        </OverlayTrigger>
+                        <Notification />
                     </Nav>
                 </Navbar>
             )

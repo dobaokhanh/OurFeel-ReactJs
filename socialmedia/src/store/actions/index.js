@@ -13,7 +13,9 @@ export {
     getUserData,
     saveUserData,
     likePost,
-    unlikePost
+    unlikePost,
+    sendNotification,
+    getNotification
 } from './userAction';
 
 export {
@@ -23,5 +25,6 @@ export {
     deletePost,
     addNewComment,
     commentCountChange,
-    fetchComments
+    fetchComments,
+    clearComment
 } from './dataAction';

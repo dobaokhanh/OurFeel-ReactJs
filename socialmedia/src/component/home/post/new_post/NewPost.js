@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import axios from '../../../../axios-orders';
+import withErrorHandler from '../../../../hoc/withErrorHandler/withErrorHandler';
 import { Modal, Form } from 'react-bootstrap';
 import * as actions from '../../../../store/actions/index';
 import Button from '../../../UI/Button/Button';
@@ -69,4 +71,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewPost);
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(NewPost, axios));

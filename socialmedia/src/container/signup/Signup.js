@@ -78,7 +78,7 @@ class Signup extends Component {
         if (this.props.loading) signupForm = <Spinner />;
 
         let errorMessage = null;
-        if (this.props.error)  errorMessage = (<p>{this.props.error.message}</p>);
+        if (this.props.error) errorMessage = (<p>{this.props.error.message}</p>);
 
         return (
             <Container className={classes.formContent}>
@@ -102,7 +102,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onSignup : (newUserData) => dispatch(actions.signUp(newUserData))
+        onSignup: (newUserData) => dispatch(actions.signUp(newUserData))
     };
 };
 

@@ -34,10 +34,10 @@ export const getUserData = (token, userId) => {
                         dataId: key
                     };
                 }
+                dispatch(getNotification());
                 dispatch(getUserDataSuccess(userData));
             })
             .catch(err => {
-                console.log(err);
                 dispatch(getUserDataFail(err));
             });
     };
@@ -63,11 +63,10 @@ export const saveUserDataFail = (error) => {
     };
 };
 
-export const saveUserData = (token, dataId, userData) => {
+export const saveUserData = (dataId, userData) => {
     return dispatch => {
         dispatch(saveUserDataStart());
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.put('/users/' + dataId + '/credentials.json' + queryParam, userData)
+        axios.put('/users/' + dataId + '/credentials.json', userData)
             .then(res => {
                 dispatch(saveUserDataSuccess(userData));
             })
@@ -96,8 +95,7 @@ export const likePost = (postId, dataId) => {
         const postLiked = {
             postId: postId
         };
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.post('/users/' + dataId + '/likes.json' + queryParam, postLiked)
+        axios.post('/users/' + dataId + '/likes.json', postLiked)
             .then(res => {
                 const like = {
                     name: res.data.name,
@@ -127,8 +125,7 @@ export const unlikePostFail = (error) => {
 
 export const unlikePost = (name, dataId) => {
     return dispatch => {
-        const queryParam = '?auth=' + localStorage.getItem('token');
-        axios.delete('/users/' + dataId + '/likes/' + name + '.json' + queryParam)
+        axios.delete('/users/' + dataId + '/likes/' + name + '.json')
             .then(
                 dispatch(unlikePostSuccess(name))
             )
@@ -137,3 +134,66 @@ export const unlikePost = (name, dataId) => {
             });
     };
 };
+
+export const sendNotificationSuccess = (notification) => {
+    return {
+        type: actionTypes.SEND_NOTIFICATION_SUCCESS,
+        noti: notification
+    };
+};
+
+export const sendNotificationFail = (error) => {
+    return {
+        type: actionTypes.SEND_NOTIFICATION_FAIL,
+        error: error
+    };
+};
+
+export const sendNotification = (notification) => {
+    return dispatch => {
+        axios.post('/notifications.json', notification)
+            .then(res => {
+                const newNotification = {
+                    ...notification,
+                    notificationId: res.data.name
+                }
+                dispatch(sendNotificationSuccess(newNotification));
+            })
+            .catch(err => {
+                dispatch(sendNotificationFail(err));
+            });
+    };
+};
+
+export const getNotificationSuccess = (notifications) => {
+    return {
+        type: actionTypes.GET_NOTIFICATION_SUCCESS,
+        noti: notifications
+    };
+};
+
+export const getNotificationFail = (error) => {
+    return {
+        type: actionTypes.GET_NOTIFICATION_FAIL,
+        error: error
+    };
+};
+
+export const getNotification = () => {
+    return dispatch => {
+        axios.get('/notifications.json')
+            .then(res => {
+                let notifications = [];
+                for (let key in res.data) {
+                    notifications.push({
+                        ...res.data[key],
+                        notificationId: key
+                    });
+                }
+                dispatch(getNotificationSuccess(notifications));
+            })
+            .catch(err => {
+                dispatch(getNotificationFail(err));
+            })
+    }
+}

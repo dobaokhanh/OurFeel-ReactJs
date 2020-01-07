@@ -5,6 +5,7 @@ const initialState = {
     dataId: null,
     credentials: null,
     likes: [],
+    notifications: [],
     error: null,
     loading: false
 };
@@ -90,6 +91,45 @@ const unlikePostFail = (state, action) => {
     });
 };
 
+const sendNotificationSuccess = (state, action) => {
+    if (action.noti.senderId !== state.credentials.userId) {
+        return updateObject(state, {
+            notifications: state.notifications.concat(action.noti),
+            error: null,
+            loading: false
+        });
+    }
+   return {...state};
+};
+
+const sendNotificationFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error
+    });
+};
+
+const getNotificationSuccess = (state, action) => {
+    let notifications = [];
+    notifications = action.noti.filter(noti => noti.read === false && noti.senderId !== state.credentials.userId);
+    return updateObject(state, {
+        notifications: notifications
+    });
+};
+
+const getNotificationFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error
+    });
+};
+
+const logout = (state, action) => {
+    return updateObject(state, {
+        dataId: null,
+        credentials: null,
+        likes: []
+    });
+};
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.GET_USER_DATA_START: return getUserDataStart(state, action);
@@ -102,6 +142,11 @@ const reducer = (state = initialState, action) => {
         case actionTypes.LIKE_POST_FAIL: return likePostFail(state, action);
         case actionTypes.UNLIKE_POST_SUCCESS: return unlikePostSuccess(state, action);
         case actionTypes.UNLIKE_POST_FAIL: return unlikePostFail(state, action);
+        case actionTypes.SEND_NOTIFICATION_SUCCESS: return sendNotificationSuccess(state, action);
+        case actionTypes.SEND_NOTIFICATION_FAIL: return sendNotificationFail(state, action);
+        case actionTypes.GET_NOTIFICATION_SUCCESS: return getNotificationSuccess(state, action);
+        case actionTypes.GET_NOTIFICATION_FAIL: return getNotificationFail(state, action);
+        case actionTypes.LOGOUT: return logout(state, action);
         default: return state;
     };
 };

@@ -1,0 +1,21 @@
+.notification {
+    cursor: pointer;
+    margin: 10px 0px 10px 15px;
+    color: black;
+}
+
+.badge {
+    color: red;
+}
+
+.dropdown {
+    border-radius: 0;
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0 0 0 0;
+}
+
+.dropdown:hover {
+    background-color: transparent;
+    border-color: transparent;
+}

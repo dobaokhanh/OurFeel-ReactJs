@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
+import axios from '../../../../axios-orders';
+import withErrorHandler from '../../../../hoc/withErrorHandler/withErrorHandler';
 import { updateObject } from '../../../../shared/utility';
 import * as actions from '../../../../store/actions/index';
 import Button from '../../../UI/Button/Button';
@@ -43,7 +45,7 @@ class EditProfile extends Component {
         for (let key in this.state.controls) {
             editedInformation[key] = this.state.controls[key].value;
         }
-        this.props.onSaveUserData(this.props.token, this.props.dataId, editedInformation);
+        this.props.onSaveUserData(this.props.dataId, editedInformation);
         this.props.onHide();
     };
 
@@ -112,4 +114,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(EditProfile, axios));

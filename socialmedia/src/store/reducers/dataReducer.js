@@ -1,30 +1,30 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
-import { commentCountChangeFail } from '../actions/dataAction';
 
 const initialState = {
     posts: [],
     comments: [],
     error: null,
-    loading: false
+    loadingPosts: false,
+    loadingComments: false
 };
 
 const fetchPostsStart = (state, action) => {
-    return updateObject(state, { error: null, loading: true});
+    return updateObject(state, { error: null, loadingPosts: true});
 };
 
 const fetchPostsSuccess = (state, action) => {    
     return updateObject(state, {
         posts: action.data,
         error: null,
-        loading: false
+        loadingPosts: false
     });
 };
 
 const fetchPostsFail = (state, action) => {
     return updateObject(state, {
         error: action.error,
-        loading: false
+        loadingPosts: false
     });
 };
 
@@ -32,7 +32,6 @@ const addNewPostSuccess = (state, action) => {
     return updateObject(state, {
         posts: state.posts.concat(action.newPost),
         error: null,
-        loading: false
     });
 };
 
@@ -56,8 +55,7 @@ const likeCountChangeSuccess = (state, action) => {
 
 const likeCountChangeFail = (state, action) => {
     return updateObject(state, {
-        error: action.error,
-        loading: false
+        error: action.error
     });
 };
 
@@ -75,15 +73,23 @@ const deletePostFail = (state, action) => {
     });
 };
 
+const addNewCommentStart = (state, action) => {
+    return updateObject(state, {
+        loadingComments: true
+    })
+}
+
 const addNewCommentSuccess = (state, action) => {
     return updateObject(state, {
-        comments: state.comments.concat(action.comment)
+        comments: state.comments.concat(action.comment),
+        loadingComments: false
     });
 };
 
 const addNewCommentFail = (state, action) => {
     return updateObject(state, {
-        error: action.error
+        error: action.error,
+        loadingComments: false
     });
 };
 
@@ -99,15 +105,42 @@ const commentCountChangeSuccess = (state, action) => {
     });
 };
 
+const commentCountChangeFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error
+    });
+};
+
+const fetchCommentsStart = (state, action) => {
+    return updateObject(state, {
+        loadingComments: true
+    });
+};
+
 const fetchCommentsSuccess = (state, action) => {
     return updateObject(state, {
-        comments: action.comments
+        comments: action.comments,
+        loadingComments: false
     });
 };
 
 const fetchCommentsFail = (state, action) => {
     return updateObject(state, {
-        error: action.error
+        error: action.error,
+        loadingComments: false
+    });
+};
+
+const clearComments = (state, action) => {
+    return updateObject(state, {
+        comments: []
+    });
+};
+
+const logout = (state, action) => {
+    return updateObject(state, {
+        posts: [],
+        comments: []
     });
 };
 
@@ -122,12 +155,16 @@ const reducer = (state = initialState, action) => {
         case actionTypes.LIKE_COUNT_CHANGE_FAIL: return likeCountChangeFail(state, action);
         case actionTypes.DELETE_POST_SUCCESS: return deletePostSuccess(state, action);
         case actionTypes.DELETE_POST_FAIL: return deletePostFail(state, action);
+        case actionTypes.ADD_NEW_COMMENT_START: return addNewCommentStart(state, action);
         case actionTypes.ADD_NEW_COMMENT_SUCCESS: return addNewCommentSuccess(state, action);
         case actionTypes.ADD_NEW_COMMENT_FAIL: return addNewCommentFail(state, action);
         case actionTypes.COMMENT_COUNT_CHANGE_SUCCESS: return commentCountChangeSuccess(state, action);
         case actionTypes.COMMENT_COUNT_CHANGE_FAIL: return commentCountChangeFail(state, action);
+        case actionTypes.FETCH_COMMENTS_START: return fetchCommentsStart(state, action);
         case actionTypes.FETCH_COMMENTS_SUCCESS: return fetchCommentsSuccess(state, action);
         case actionTypes.FETCH_COMMENTS_FAIL: return fetchCommentsFail(state, action);
+        case actionTypes.CLEAR_COMMENTS: return clearComments(state, action);
+        case actionTypes.LOGOUT: return logout(state, action);
         default: return state;
     }
 }

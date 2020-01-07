@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Modal, OverlayTrigger, Tooltip, Form, Button } from 'react-bootstrap';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
+import axios from '../../../../axios-orders';
+import withErrorHandler from '../../../../hoc/withErrorHandler/withErrorHandler';
 import Auxiliary from '../../../../hoc/auxiliary/Auxiliary';
 import * as actions from '../../../../store/actions/index';
 import classes from './deletePost.module.css';
@@ -15,7 +17,7 @@ class DeletePost extends Component {
 
     deletePostHandler = () => {
         this.props.onDeletePost(this.props.postId);
-        this.setState({setDeleteDialogShow: false});
+        this.setState({ setDeleteDialogShow: false });
     }
 
     render() {
@@ -40,8 +42,8 @@ class DeletePost extends Component {
                         <Form>
                             <Form.Label>Are you sure you want to delete this post ?</Form.Label>
                             <Form.Group>
-                            <Button variant='danger' onClick={this.deletePostHandler}> Delete </Button>
-                            <Button variant='secondary' onClick={() => this.setState({ setDeleteDialogShow: false })}> Cancel </Button>
+                                <Button variant='danger' onClick={this.deletePostHandler}> Delete </Button>
+                                <Button variant='secondary' onClick={() => this.setState({ setDeleteDialogShow: false })}> Cancel </Button>
                             </Form.Group>
                         </Form>
                     </Modal.Body>
@@ -57,4 +59,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(DeletePost);
+export default connect(null, mapDispatchToProps)(withErrorHandler(DeletePost, axios));

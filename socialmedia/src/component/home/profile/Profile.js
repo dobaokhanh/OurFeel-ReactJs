@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import dayjs from 'dayjs';
-
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaMapMarked, FaRegCalendarAlt, FaSignOutAlt, FaUserEdit } from 'react-icons/fa';
+
+import axios from '../../../axios-orders';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import Spinner from '../../../component/UI/Spinner/Spinner';
 import EditProfile from './edit_profile/EditProfile';
 import classes from './profile.module.css';
@@ -26,7 +28,6 @@ class Profile extends Component {
 
     render() {
         let profile = <Spinner />;
-
         if (this.props.credentials) {
             profile = (
                 <Card className={classes.card}>
@@ -80,8 +81,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitUserData: (token, userId) => dispatch(actions.getUserData(token, userId)),
+        onGetNotification: () => dispatch(actions.getNotification()),
         onLogoutUser: () => dispatch(actions.logout())
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profile, axios));

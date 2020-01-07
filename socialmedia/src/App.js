@@ -1,40 +1,40 @@
 import React, { Component } from 'react';
-import { withRouter, Route, Switch, Redirect} from 'react-router-dom';
+import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import NavBar from './component/navbar/Navbar';
 import Login from './container/login/Login';
 import Home from './container/home/Home';
 import Signup from './container/signup/Signup';
+import UserPage from './container/home/user_homepage/UserPage';
 import * as actions from './store/actions/index';
-import './App.css';
 
-class App extends Component{
+class App extends Component {
 
   componentDidMount() {
     this.props.onTryAutoSignin();
   }
 
   render() {
-
     let routes = (
       <Switch>
-          <Route path='/signup' component={Signup} />
-          <Route exact path='/' component={Login} />
-          <Redirect to='/' />
+        <Route exact path='/signup' component={Signup} />
+        <Route exact path='/' component={Login} />
+        <Redirect to='/' />
       </Switch>
     );
-
     if (this.props.isAuthenticated) {
       routes = (
         <Switch>
-           <Route path='/home' component={Home} />
-           <Redirect to='/home' />
+          <Route exact path='/' component={Home} />
+          <Route exact path='/home/:userId' component={UserPage} />
+          <Route exact path='/:userId/post/:postId' component={UserPage} />
+          <Redirect to='/' />
         </Switch>
       )
     }
 
     return (
-      <div className="App">
+      <div>
         <NavBar />
         {routes}
       </div>
