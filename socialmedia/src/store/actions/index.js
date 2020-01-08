@@ -15,7 +15,8 @@ export {
     likePost,
     unlikePost,
     sendNotification,
-    getNotification
+    getNotification,
+    markNotificationRead
 } from './userAction';
 
 export {

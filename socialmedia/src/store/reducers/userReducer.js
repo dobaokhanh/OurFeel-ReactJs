@@ -110,13 +110,31 @@ const sendNotificationFail = (state, action) => {
 
 const getNotificationSuccess = (state, action) => {
     let notifications = [];
-    notifications = action.noti.filter(noti => noti.read === false && noti.senderId !== state.credentials.userId);
+    notifications = action.noti.filter(noti => noti.senderId !== state.credentials.userId);
     return updateObject(state, {
         notifications: notifications
     });
 };
 
 const getNotificationFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error
+    });
+};
+
+const markNotificationReadSuccess = (state, action) => {
+    const index = state.notifications.findIndex( (noti) => noti.notificationId === action.notificationId);
+    let notifications = [];
+    state.notifications.map(noti => (
+        notifications.push({...noti})
+    ));
+    notifications[index].read = true;
+    return updateObject(state, {
+        notifications: notifications
+    });
+};
+
+const markNotificationReadFail = (state, action) => {
     return updateObject(state, {
         error: action.error
     });
@@ -146,6 +164,8 @@ const reducer = (state = initialState, action) => {
         case actionTypes.SEND_NOTIFICATION_FAIL: return sendNotificationFail(state, action);
         case actionTypes.GET_NOTIFICATION_SUCCESS: return getNotificationSuccess(state, action);
         case actionTypes.GET_NOTIFICATION_FAIL: return getNotificationFail(state, action);
+        case actionTypes.MARK_NOTIFICATION_READ_SUCCESS: return markNotificationReadSuccess(state, action);
+        case actionTypes.MARK_NOTIFICATION_READ_FAIL: return markNotificationReadFail(state, action);
         case actionTypes.LOGOUT: return logout(state, action);
         default: return state;
     };

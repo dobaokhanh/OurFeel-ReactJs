@@ -20,8 +20,14 @@ class UserPage extends Component {
         error: null
     }
 
+    componentDidUpdate (prevProps) {
+        const postId = this.props.match.params.postId; 
+        if (prevProps.match.params !== this.props.match.params) {
+            this.setState({ postIdParam: postId })
+        }
+    }
+
     componentDidMount() {
-        
         const postId = this.props.match.params.postId;
         if (postId) {
             this.setState({ postIdParam: postId })

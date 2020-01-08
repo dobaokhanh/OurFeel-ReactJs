@@ -37,6 +37,11 @@ class Comments extends Component {
         }
     };
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.showModal !== this.props.showModal) 
+            this.setState({setShowComment: true});
+    }
+
     commentHideHandler = () => {
         this.setState({ setShowComment: false });
         this.props.onClearComments();
@@ -150,7 +155,7 @@ const mapDispatchToProps = dispatch => {
         onClearComments: () => dispatch(actions.clearComment()),
         onAddNewComment: (postId, comment) => dispatch(actions.addNewComment(postId, comment)),
         onCommentCountChange: (postId, commentCount) => dispatch(actions.commentCountChange(postId, commentCount)),
-        onSendNotification: (notification) => dispatch(actions.sendNotification(notification))
+        onSendNotification: (notification) => dispatch(actions.sendNotification(notification)),
     }
 }
 

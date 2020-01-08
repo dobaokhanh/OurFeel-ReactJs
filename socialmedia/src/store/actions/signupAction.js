@@ -32,7 +32,7 @@ export const signUp = (userSignUpData) => {
             password: userSignUpData.password,
             returnSecureToken: true
         };
-        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDEslbGxXqFIDshVngmyWuidYQFr40MZLg', signupData)
+        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + process.env.REACT_APP_API_KEY, signupData)
             .then(res => {
                 dispatch(addNewUserToDb(userSignUpData, res.data));
             })

@@ -14,17 +14,24 @@ import classes from './notification.module.css';
 
 class Notification extends Component {
 
+    markNotificationReadHandler = (notificationId) => () => {
+        this.props.onMarkNotificationRead(notificationId);
+    }
+
     render() {
         let noti = (<p>You do not have any notification </p>);
 
         if (this.props.notifications) {
+            this.props.notifications.sort((a, b) => {
+                return dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf();
+            });
             noti = this.props.notifications.map(notification => (
                 <Dropdown.Item
                     as={Link}
                     to={'/' + notification.recipientId + '/post/' + notification.postId}
                     key={notification.notificationId}
-                    className={classes.link}>
-
+                    className={classes.link}
+                >
                     {notification.type === 'liked' ? <FaHeart /> : <FaCommentAlt />} &nbsp;
                     <strong>{notification.senderName} </strong> &nbsp;
                     {notification.type} your post &emsp;
@@ -40,7 +47,11 @@ class Notification extends Component {
                     <Dropdown.Toggle className={classes.dropdown}>
                         <FaBell className={classes.notification} />
                         <Badge className={classes.badge}>
-                            <strong>{this.props.notifications.length > 0 ? this.props.notifications.length : null}</strong>
+                            <strong>
+                                {this.props.notifications
+                                    .filter(noti => !noti.read)
+                                    .length > 0 ? this.props.notifications.length : null}
+                            </strong>
                         </Badge>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
@@ -60,7 +71,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onGetNotification: () => dispatch(actions.getNotification())
+        onGetNotification: () => dispatch(actions.getNotification()),
+        onMarkNotificationRead: (notificationId) => dispatch(actions.markNotificationRead(notificationId))
     };
 };
 

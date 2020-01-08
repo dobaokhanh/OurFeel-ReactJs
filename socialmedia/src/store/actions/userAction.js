@@ -196,4 +196,26 @@ export const getNotification = () => {
                 dispatch(getNotificationFail(err));
             })
     }
-}
+};
+
+export const markNotificationReadSuccess = (notificationId) => {
+    return {
+        type: actionTypes.MARK_NOTIFICATION_READ_SUCCESS,
+        notificationId: notificationId
+    };
+};
+
+export const markNotificationReadFail = (error) => {
+    return {
+        type: actionTypes.MARK_NOTIFICATION_READ_FAIL,
+        error: error
+    };
+};
+
+export const markNotificationRead = (notificationId) => {
+    return dispatch => {
+        axios.put('/notifications/' + notificationId + '/read.json', true)
+            .then(dispatch(markNotificationReadSuccess(notificationId)))
+            .catch(err => dispatch(markNotificationReadFail(err)));
+    };
+};
