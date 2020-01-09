@@ -1,12 +1,23 @@
 import React, { Component } from 'react';
 import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+
+import asyncComponent from './hoc/asyncComponent/asyncComponent';
 import NavBar from './component/navbar/Navbar';
 import Login from './container/login/Login';
-import Home from './container/home/Home';
-import Signup from './container/signup/Signup';
-import UserPage from './container/home/user_homepage/UserPage';
 import * as actions from './store/actions/index';
+
+const asyncHome = asyncComponent(() => {
+  return import('./container/home/Home');
+});
+
+const asyncUserPage = asyncComponent(() => {
+  return import('./container/home/user_homepage/UserPage');
+});
+
+const asyncSignup = asyncComponent(() => {
+  return import('./container/signup/Signup');
+});
 
 class App extends Component {
 
@@ -17,7 +28,7 @@ class App extends Component {
   render() {
     let routes = (
       <Switch>
-        <Route exact path='/signup' component={Signup} />
+        <Route exact path='/signup' component={asyncSignup} />
         <Route exact path='/' component={Login} />
         <Redirect to='/' />
       </Switch>
@@ -25,9 +36,9 @@ class App extends Component {
     if (this.props.isAuthenticated) {
       routes = (
         <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/home/:userId' component={UserPage} />
-          <Route exact path='/:userId/post/:postId' component={UserPage} />
+          <Route exact path='/' component={asyncHome} />
+          <Route exact path='/home/:userId' component={asyncUserPage} />
+          <Route exact path='/:userId/post/:postId' component={asyncUserPage} />
           <Redirect to='/' />
         </Switch>
       )

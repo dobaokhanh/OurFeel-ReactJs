@@ -7,16 +7,11 @@ import { FaHeart, FaCommentAlt, FaBell } from 'react-icons/fa';
 
 import axios from '../../../axios-orders';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
-import * as actions from '../../../store/actions/index';
 import Auxiliary from '../../../hoc/auxiliary/Auxiliary';
 import classes from './notification.module.css';
 
 
 class Notification extends Component {
-
-    markNotificationReadHandler = (notificationId) => () => {
-        this.props.onMarkNotificationRead(notificationId);
-    }
 
     render() {
         let noti = (<p>You do not have any notification </p>);
@@ -28,7 +23,10 @@ class Notification extends Component {
             noti = this.props.notifications.map(notification => (
                 <Dropdown.Item
                     as={Link}
-                    to={'/' + notification.recipientId + '/post/' + notification.postId}
+                    to={{
+                        pathname: '/' + notification.recipientId + '/post/' + notification.postId,
+                        notificationId: notification.notificationId
+                    }}
                     key={notification.notificationId}
                     className={classes.link}
                 >
@@ -69,11 +67,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onGetNotification: () => dispatch(actions.getNotification()),
-        onMarkNotificationRead: (notificationId) => dispatch(actions.markNotificationRead(notificationId))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Notification, axios));
+export default connect(mapStateToProps)(withErrorHandler(Notification, axios));

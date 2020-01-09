@@ -37,11 +37,6 @@ class Comments extends Component {
         }
     };
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.showModal !== this.props.showModal) 
-            this.setState({setShowComment: true});
-    }
-
     commentHideHandler = () => {
         this.setState({ setShowComment: false });
         this.props.onClearComments();

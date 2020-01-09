@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal } from 'react-bootstrap';
 import Auxiliary from '../auxiliary/Auxiliary';
 
-const withErrorHandler = (WrappedComponent, axios, token) => {
+const withErrorHandler = (WrappedComponent, axios) => {
     return class extends Component {
 
         state = {

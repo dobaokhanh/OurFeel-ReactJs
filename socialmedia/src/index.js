@@ -14,7 +14,7 @@ import UserReducer from './store/reducers/userReducer';
 import DataReducer from './store/reducers/dataReducer';
 import * as serviceWorker from './serviceWorker';
 
-const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
+const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
 const rootReducer = combineReducers({
     auth: AuthReducer,

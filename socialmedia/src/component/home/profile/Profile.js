@@ -81,7 +81,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onInitUserData: (token, userId) => dispatch(actions.getUserData(token, userId)),
-        onGetNotification: () => dispatch(actions.getNotification()),
         onLogoutUser: () => dispatch(actions.logout())
     };
 };

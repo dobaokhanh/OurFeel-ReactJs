@@ -83,7 +83,6 @@ class Post extends Component {
                             postId={this.props.postId}
                             userName={this.props.name}
                             userId={this.props.userId}
-                            createdAt={this.props.createdAt}
                             body={this.props.body}
                             likeCount={this.props.likeCount}
                             commentCount={this.props.commentCount}

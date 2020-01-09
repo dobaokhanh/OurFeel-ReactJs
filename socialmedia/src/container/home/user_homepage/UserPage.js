@@ -20,14 +20,21 @@ class UserPage extends Component {
         error: null
     }
 
-    componentDidUpdate (prevProps) {
-        const postId = this.props.match.params.postId; 
-        if (prevProps.match.params !== this.props.match.params) {
-            this.setState({ postIdParam: postId })
+    componentDidUpdate = (prevProps) => {
+        const postId = this.props.match.params.postId;
+        if (prevProps.match.params.postId !== postId) {
+            this.setState({
+                ...this.state,
+                postIdParam: postId
+            });
         }
     }
 
     componentDidMount() {
+        if (this.props.location.notificationId) {
+            this.props.onMarkNotificationRead(this.props.location.notificationId)
+        }
+
         const postId = this.props.match.params.postId;
         if (postId) {
             this.setState({ postIdParam: postId })
@@ -42,14 +49,14 @@ class UserPage extends Component {
                         ...res.data[key].credentials,
                     };
                 };
-                this.setState({credentials: userData});
+                this.setState({ credentials: userData });
             })
             .catch(err => {
-                this.setState({error: err});
+                this.setState({ error: err });
             });
 
         const postsFetchById = this.props.posts.filter(post => post.userId === this.props.match.params.userId);
-        this.setState({postsFetchedByUserId: postsFetchById});
+        this.setState({ postsFetchedByUserId: postsFetchById });
     };
 
     render() {
@@ -109,7 +116,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onGetUserData: (token, userId) => dispatch(actions.getUserData(token, userId))
+        onGetUserData: (token, userId) => dispatch(actions.getUserData(token, userId)),
+        onMarkNotificationRead: (notificationId) => dispatch(actions.markNotificationRead(notificationId))
     };
 };
 
