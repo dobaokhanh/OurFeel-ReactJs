@@ -1,6 +1,29 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
 
+export const auth = (email, password) => {
+    return dispatch => {
+        dispatch(authStart());
+        const authData = {
+            email: email,
+            password: password,
+            returnSecureToken: true
+        }
+        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + process.env.REACT_APP_API_KEY, authData)
+            .then(res => {
+                const expirationDate = new Date(new Date().getTime() + res.data.expiresIn*1000);
+                localStorage.setItem('token', res.data.idToken);
+                localStorage.setItem('expirationDate', expirationDate);
+                localStorage.setItem('userId', res.data.localId);
+                dispatch(authSuccess(res.data.idToken, res.data.localId));
+                dispatch(checkTimeOut(res.data.expiresIn));
+            })
+            .catch(err => {
+                dispatch(authFail(err));
+            });
+    };
+};
+
 export const authStart = () => {
     return {
         type: actionTypes.AUTH_START
@@ -39,28 +62,6 @@ export const checkTimeOut = (expirationTime) => {
     };
 };
 
-export const auth = (email, password) => {
-    return dispatch => {
-        dispatch(authStart());
-        const authData = {
-            email: email,
-            password: password,
-            returnSecureToken: true
-        }
-        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + process.env.REACT_APP_API_KEY, authData)
-            .then(res => {
-                const expirationDate = new Date(new Date().getTime() + res.data.expiresIn*1000);
-                localStorage.setItem('token', res.data.idToken);
-                localStorage.setItem('expirationDate', expirationDate);
-                localStorage.setItem('userId', res.data.localId);
-                dispatch(authSuccess(res.data.idToken, res.data.localId));
-                dispatch(checkTimeOut(res.data.expiresIn));
-            })
-            .catch(err => {
-                dispatch(authFail(err));
-            });
-    };
-};
 
 export const authCheckState = () => {
     return dispatch => {
@@ -79,9 +80,3 @@ export const authCheckState = () => {
     };
 };
 
-export const setAuthRedirectPath = (path) => {
-    return {
-        type: actionTypes.SET_AUTH_REDIRECT_PATH,
-        path: path
-    };
-};

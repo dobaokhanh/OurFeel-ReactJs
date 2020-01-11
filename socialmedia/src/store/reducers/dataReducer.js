@@ -9,6 +9,8 @@ const initialState = {
     loadingComments: false
 };
 
+// -------------- Fetch Posts -----------------------
+
 const fetchPostsStart = (state, action) => {
     return updateObject(state, { error: null, loadingPosts: true});
 };
@@ -28,6 +30,8 @@ const fetchPostsFail = (state, action) => {
     });
 };
 
+// ----------------------- Add New Post ----------------------
+
 const addNewPostSuccess = (state, action) => {
     return updateObject(state, {
         posts: state.posts.concat(action.newPost),
@@ -40,6 +44,24 @@ const addNewPostFail = (state, action) => {
         error: action.error
     });
 };
+
+// ---------------------- Delete Post -----------------------
+
+const deletePostSuccess = (state, action) => {
+    let posts = [];
+    posts = state.posts.filter( (post) => post.postId !== action.postId)
+    return updateObject(state, {
+        posts: posts
+    });
+};
+
+const deletePostFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error
+    });
+};
+
+// ------------------------- Like Count Change ---------------------
 
 const likeCountChangeSuccess = (state, action) => {
     const index = state.posts.findIndex( (post) => post.postId === action.postId);
@@ -59,57 +81,7 @@ const likeCountChangeFail = (state, action) => {
     });
 };
 
-const deletePostSuccess = (state, action) => {
-    let posts = [];
-    posts = state.posts.filter( (post) => post.postId !== action.postId)
-    return updateObject(state, {
-        posts: posts
-    });
-};
-
-const deletePostFail = (state, action) => {
-    return updateObject(state, {
-        error: action.error
-    });
-};
-
-const addNewCommentStart = (state, action) => {
-    return updateObject(state, {
-        loadingComments: true
-    })
-}
-
-const addNewCommentSuccess = (state, action) => {
-    return updateObject(state, {
-        comments: state.comments.concat(action.comment),
-        loadingComments: false
-    });
-};
-
-const addNewCommentFail = (state, action) => {
-    return updateObject(state, {
-        error: action.error,
-        loadingComments: false
-    });
-};
-
-const commentCountChangeSuccess = (state, action) => {
-    const index = state.posts.findIndex( (post) => post.postId === action.postId);
-    let posts = [];
-    state.posts.map(post => (
-        posts.push({...post})
-    ));
-    posts[index].commentCount = action.commentCount;
-    return updateObject(state, {
-        posts: posts
-    });
-};
-
-const commentCountChangeFail = (state, action) => {
-    return updateObject(state, {
-        error: action.error
-    });
-};
+// ---------------------------- Fetch Comments -----------------------
 
 const fetchCommentsStart = (state, action) => {
     return updateObject(state, {
@@ -131,11 +103,57 @@ const fetchCommentsFail = (state, action) => {
     });
 };
 
+// ----------------------- Add New Comment ------------------------
+
+const addNewCommentStart = (state, action) => {
+    return updateObject(state, {
+        loadingComments: true
+    })
+}
+
+const addNewCommentSuccess = (state, action) => {
+    return updateObject(state, {
+        comments: state.comments.concat(action.comment),
+        loadingComments: false
+    });
+};
+
+const addNewCommentFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error,
+        loadingComments: false
+    });
+};
+
+// --------------------------- Comment Count Change ------------------------
+
+const commentCountChangeSuccess = (state, action) => {
+    const index = state.posts.findIndex( (post) => post.postId === action.postId);
+    let posts = [];
+    state.posts.map(post => (
+        posts.push({...post})
+    ));
+    posts[index].commentCount = action.commentCount;
+    return updateObject(state, {
+        posts: posts
+    });
+};
+
+const commentCountChangeFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error
+    });
+};
+
+// ----------------------------------- Clear comment ---------------------------
+
 const clearComments = (state, action) => {
     return updateObject(state, {
         comments: []
     });
 };
+
+// --------------------------------- Logout -------------------------------
 
 const logout = (state, action) => {
     return updateObject(state, {

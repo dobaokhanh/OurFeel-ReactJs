@@ -9,6 +9,8 @@ const initialState = {
     authRedirectPath: null
 };
 
+// ----------------- Authentication ----------------
+
 const authStart = (state, action) => {
     return updateObject(state, { error: null, loading: true });
 }
@@ -36,6 +38,8 @@ const authLogout = (state, action) => {
         userId: null
     });
 };
+
+// ------------------------ Sign up ----------------------
 
 const signupStart = (state, action) => {
     return updateObject(state, { error: null, loading: true });

@@ -1,25 +1,7 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
 
-export const getUserDataStart = () => {
-    return {
-        type: actionTypes.GET_USER_DATA_START
-    };
-};
-
-export const getUserDataSuccess = (userData) => {
-    return {
-        type: actionTypes.GET_USER_DATA_SUCCESS,
-        userData: userData
-    }
-};
-
-export const getUserDataFail = (error) => {
-    return {
-        type: actionTypes.GET_USER_DATA_FAIL,
-        error: error
-    }
-};
+// ----------------- Fetch User Data ------------------
 
 export const getUserData = (token, userId) => {
     return dispatch => {
@@ -43,6 +25,41 @@ export const getUserData = (token, userId) => {
     };
 };
 
+export const getUserDataStart = () => {
+    return {
+        type: actionTypes.GET_USER_DATA_START
+    };
+};
+
+export const getUserDataSuccess = (userData) => {
+    return {
+        type: actionTypes.GET_USER_DATA_SUCCESS,
+        userData: userData
+    }
+};
+
+export const getUserDataFail = (error) => {
+    return {
+        type: actionTypes.GET_USER_DATA_FAIL,
+        error: error
+    }
+};
+
+// --------------------Save User Data ----------------------
+
+export const saveUserData = (dataId, userData) => {
+    return dispatch => {
+        dispatch(saveUserDataStart());
+        axios.put('/users/' + dataId + '/credentials.json', userData)
+            .then(res => {
+                dispatch(saveUserDataSuccess(userData));
+            })
+            .catch(err => {
+                dispatch(saveUserDataFail(err));
+            })
+    };
+};
+
 export const saveUserDataStart = () => {
     return {
         type: actionTypes.SAVE_USER_DATA_START
@@ -63,32 +80,7 @@ export const saveUserDataFail = (error) => {
     };
 };
 
-export const saveUserData = (dataId, userData) => {
-    return dispatch => {
-        dispatch(saveUserDataStart());
-        axios.put('/users/' + dataId + '/credentials.json', userData)
-            .then(res => {
-                dispatch(saveUserDataSuccess(userData));
-            })
-            .catch(err => {
-                dispatch(saveUserDataFail(err));
-            })
-    };
-};
-
-export const likePostSuccess = (like) => {
-    return {
-        type: actionTypes.LIKE_POST_SUCCESS,
-        like: like
-    };
-};
-
-export const likePostFail = (error) => {
-    return {
-        type: actionTypes.LIKE_POST_FAIL,
-        error: error
-    };
-};
+// ------------------------ Like Post --------------------
 
 export const likePost = (postId, dataId) => {
     return dispatch => {
@@ -109,6 +101,34 @@ export const likePost = (postId, dataId) => {
     };
 };
 
+export const likePostSuccess = (like) => {
+    return {
+        type: actionTypes.LIKE_POST_SUCCESS,
+        like: like
+    };
+};
+
+export const likePostFail = (error) => {
+    return {
+        type: actionTypes.LIKE_POST_FAIL,
+        error: error
+    };
+};
+
+// ---------------------- Unlike Post ------------------------
+
+export const unlikePost = (name, dataId) => {
+    return dispatch => {
+        axios.delete('/users/' + dataId + '/likes/' + name + '.json')
+            .then(
+                dispatch(unlikePostSuccess(name))
+            )
+            .catch(err => {
+                dispatch(unlikePostFail(err));
+            });
+    };
+};
+
 export const unlikePostSuccess = (name) => {
     return {
         type: actionTypes.UNLIKE_POST_SUCCESS,
@@ -123,14 +143,20 @@ export const unlikePostFail = (error) => {
     };
 };
 
-export const unlikePost = (name, dataId) => {
+// ------------------- Send Notification -----------------------
+
+export const sendNotification = (notification) => {
     return dispatch => {
-        axios.delete('/users/' + dataId + '/likes/' + name + '.json')
-            .then(
-                dispatch(unlikePostSuccess(name))
-            )
+        axios.post('/notifications.json', notification)
+            .then(res => {
+                const newNotification = {
+                    ...notification,
+                    notificationId: res.data.name
+                }
+                dispatch(sendNotificationSuccess(newNotification));
+            })
             .catch(err => {
-                dispatch(unlikePostFail(err));
+                dispatch(sendNotificationFail(err));
             });
     };
 };
@@ -149,35 +175,7 @@ export const sendNotificationFail = (error) => {
     };
 };
 
-export const sendNotification = (notification) => {
-    return dispatch => {
-        axios.post('/notifications.json', notification)
-            .then(res => {
-                const newNotification = {
-                    ...notification,
-                    notificationId: res.data.name
-                }
-                dispatch(sendNotificationSuccess(newNotification));
-            })
-            .catch(err => {
-                dispatch(sendNotificationFail(err));
-            });
-    };
-};
-
-export const getNotificationSuccess = (notifications) => {
-    return {
-        type: actionTypes.GET_NOTIFICATION_SUCCESS,
-        noti: notifications
-    };
-};
-
-export const getNotificationFail = (error) => {
-    return {
-        type: actionTypes.GET_NOTIFICATION_FAIL,
-        error: error
-    };
-};
+// ---------------------- Get Notification ----------------------
 
 export const getNotification = () => {
     return dispatch => {
@@ -198,6 +196,30 @@ export const getNotification = () => {
     }
 };
 
+export const getNotificationSuccess = (notifications) => {
+    return {
+        type: actionTypes.GET_NOTIFICATION_SUCCESS,
+        noti: notifications
+    };
+};
+
+export const getNotificationFail = (error) => {
+    return {
+        type: actionTypes.GET_NOTIFICATION_FAIL,
+        error: error
+    };
+};
+
+// -------------------Mark Notification Read --------------------
+
+export const markNotificationRead = (notificationId) => {
+    return dispatch => {
+        axios.put('/notifications/' + notificationId + '/read.json', true)
+            .then(dispatch(markNotificationReadSuccess(notificationId)))
+            .catch(err => dispatch(markNotificationReadFail(err)));
+    };
+};
+
 export const markNotificationReadSuccess = (notificationId) => {
     return {
         type: actionTypes.MARK_NOTIFICATION_READ_SUCCESS,
@@ -209,13 +231,5 @@ export const markNotificationReadFail = (error) => {
     return {
         type: actionTypes.MARK_NOTIFICATION_READ_FAIL,
         error: error
-    };
-};
-
-export const markNotificationRead = (notificationId) => {
-    return dispatch => {
-        axios.put('/notifications/' + notificationId + '/read.json', true)
-            .then(dispatch(markNotificationReadSuccess(notificationId)))
-            .catch(err => dispatch(markNotificationReadFail(err)));
     };
 };

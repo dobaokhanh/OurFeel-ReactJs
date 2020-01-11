@@ -10,6 +10,8 @@ const initialState = {
     loading: false
 };
 
+// ------------------------------- Fetch User Data --------------------------
+
 const getUserDataStart = (state, action) => {
     return updateObject(state, { error: null, loading: true });
 };
@@ -40,6 +42,8 @@ const getUserDataFail = (state, action) => {
     });
 };
 
+// ------------------------------ Save User Data --------------------------
+
 const saveUserDataStart = (state, action) => {
     return updateObject(state, {
         error: null,
@@ -62,6 +66,9 @@ const saveUserDataFail = (state, action) => {
     });
 };
 
+
+// ----------------------------- Like Post --------------------------------
+
 const likePostSuccess = (state, action) => {
     return updateObject(state, {
         likes: state.likes.concat(action.like),
@@ -77,6 +84,8 @@ const likePostFail = (state, action) => {
     });
 };
 
+// ----------------------------- Unlike Post -----------------------------
+
 const unlikePostSuccess = (state, action) => {
     return updateObject(state, {
         likes: state.likes.filter(
@@ -90,6 +99,8 @@ const unlikePostFail = (state, action) => {
         error: action.error
     });
 };
+
+// ----------------------------- Send Notification ----------------------
 
 const sendNotificationSuccess = (state, action) => {
     if (action.noti.senderId !== state.credentials.userId) {
@@ -108,9 +119,11 @@ const sendNotificationFail = (state, action) => {
     });
 };
 
+// --------------------------------- Fetch Notification ----------------------
+
 const getNotificationSuccess = (state, action) => {
     let notifications = [];
-    notifications = action.noti.filter(noti => noti.senderId !== state.credentials.userId);
+    notifications = action.noti.filter(noti => noti.recipientId === state.credentials.userId);
     return updateObject(state, {
         notifications: notifications
     });
@@ -121,6 +134,8 @@ const getNotificationFail = (state, action) => {
         error: action.error
     });
 };
+
+// -------------------------------- Mark Notification Read -------------------
 
 const markNotificationReadSuccess = (state, action) => {
     const index = state.notifications.findIndex( (noti) => noti.notificationId === action.notificationId);
@@ -139,6 +154,8 @@ const markNotificationReadFail = (state, action) => {
         error: action.error
     });
 };
+
+// ----------------------------- Logout ------------------------
 
 const logout = (state, action) => {
     return updateObject(state, {

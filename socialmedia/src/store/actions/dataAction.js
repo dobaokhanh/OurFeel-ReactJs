@@ -1,6 +1,28 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-orders';
 
+// ----------------- Fetch Posts -----------------------
+
+export const fetchPosts = () => {
+    return dispatch => {
+        dispatch(fetchPostsStart());
+        axios.get('/posts.json')
+            .then(res => {
+                let postsFetched = [];
+                for (let key in res.data) {
+                    postsFetched.push({
+                        ...res.data[key],
+                        postId: key
+                    });
+                }
+                dispatch(fetchPostsSuccess(postsFetched));
+            })
+            .catch(err => {
+                dispatch(fetchPostsFail(err));
+            });
+    };
+};
+
 export const fetchPostsStart = () => {
     return {
         type: actionTypes.FETCH_POSTS_START
@@ -21,22 +43,20 @@ export const fetchPostsFail = (error) => {
     };
 };
 
-export const fetchPosts = () => {
+// ---------------------- Add New Post -----------------------
+
+export const addNewPost = (newPostData) => {
     return dispatch => {
-        dispatch(fetchPostsStart());
-        axios.get('/posts.json' )
+        axios.post('/posts.json', newPostData)
             .then(res => {
-                let postsFetched = [];
-                for (let key in res.data) {
-                    postsFetched.push({
-                        ...res.data[key],
-                        postId: key
-                    });
+                const newPost = {
+                    ...newPostData,
+                    postId: res.data.name
                 }
-                dispatch(fetchPostsSuccess(postsFetched));
+                dispatch(addNewPostSuccess(newPost));
             })
             .catch(err => {
-                dispatch(fetchPostsFail(err));
+                dispatch(addNewPostFail(err));
             });
     };
 };
@@ -55,18 +75,45 @@ export const addNewPostFail = (error) => {
     };
 };
 
-export const addNewPost = (newPostData) => {
+// -------------------Delete Post ------------------------
+
+export const deletePost = (postId) => {
     return dispatch => {
-        axios.post('/posts.json', newPostData)
-            .then(res => {
-                const newPost = {
-                    ...newPostData,
-                    postId: res.data.name
-                }
-                dispatch(addNewPostSuccess(newPost));
-            })
+        axios.delete('/posts/' + postId + '.json')
+            .then(
+                dispatch(deletePostSuccess(postId))
+            )
             .catch(err => {
-                dispatch(addNewPostFail(err));
+                dispatch(deletePostFail(err));
+            });
+
+    };
+};
+
+export const deletePostSuccess = (postId) => {
+    return {
+        type: actionTypes.DELETE_POST_SUCCESS,
+        postId: postId
+    };
+};
+
+export const deletePostFail = (error) => {
+    return {
+        type: actionTypes.DELETE_POST_FAIL,
+        error: error
+    };
+};
+
+// -------------------- Like Count Change --------------------
+
+export const likeCountChange = (postId, likeCount) => {
+    return dispatch => {
+        axios.put('/posts/' + postId + '/likeCount.json', likeCount)
+            .then((
+                dispatch(likeCountChangeSuccess(postId, likeCount))
+            ))
+            .catch(err => {
+                dispatch(likeCountChangeFail(err));
             });
     };
 };
@@ -86,40 +133,64 @@ export const likeCountChangeFail = (error) => {
     };
 };
 
-export const likeCountChange = (postId, likeCount) => {
+// -------------------- Fetch Comments ---------------------
+
+export const fetchComments = (postId) => {
     return dispatch => {
-        axios.put('/posts/' + postId + '/likeCount.json', likeCount)
-            .then((
-                dispatch(likeCountChangeSuccess(postId, likeCount))
-            ))
+        dispatch(fetchCommentsStart());
+        axios.get('/comments/' + postId + '.json')
+            .then(res => {
+                let comments = [];
+                for (let key in res.data) {
+                    comments.push({
+                        ...res.data[key],
+                        commentId: key
+                    });
+                };
+                dispatch(fetchCommentsSuccess(comments));
+            })
             .catch(err => {
-                dispatch(likeCountChangeFail(err));
+                dispatch(fetchCommentsFail(err));
             });
     };
 };
 
-export const deletePostSuccess = (postId) => {
+export const fetchCommentsStart = () => {
     return {
-        type: actionTypes.DELETE_POST_SUCCESS,
-        postId: postId
+        type: actionTypes.FETCH_COMMENTS_START
     };
 };
 
-export const deletePostFail = (error) => {
+export const fetchCommentsSuccess = (comments) => {
     return {
-        type: actionTypes.DELETE_POST_FAIL,
+        type: actionTypes.FETCH_COMMENTS_SUCCESS,
+        comments: comments
+    };
+};
+
+export const fetchCommentsFail = (error) => {
+    return {
+        type: actionTypes.FETCH_COMMENTS_FAIL,
         error: error
     };
 };
 
-export const deletePost = (postId) => {
+
+// --------------------- Add New Comment ----------------------------
+
+export const addNewComment = (postId, comment) => {
     return dispatch => {
-        axios.delete('/posts/' + postId + '.json' )
-            .then(
-                dispatch(deletePostSuccess(postId))
-            )
+        dispatch(addNewCommentStart());
+        axios.post('/comments/' + postId + '.json', comment)
+            .then(res => {
+                const newComment = {
+                    ...comment,
+                    commentId: res.data.name
+                }
+                dispatch(addNewCommentSuccess(newComment))
+            })
             .catch(err => {
-                dispatch(deletePostFail(err));
+                dispatch(addNewCommentFail(err));
             });
 
     };
@@ -145,23 +216,7 @@ export const addNewCommentFail = (error) => {
     };
 };
 
-export const addNewComment = (postId, comment) => {
-    return dispatch => {
-        dispatch(addNewCommentStart());
-        axios.post('/comments/' + postId + '.json' , comment)
-            .then(res => {
-                const newComment = {
-                    ...comment,
-                    commentId: res.data.name
-                }
-                dispatch(addNewCommentSuccess(newComment))
-            })
-            .catch(err => {
-                dispatch(addNewCommentFail(err));
-        });
-
-    };
-};
+// -------------------- Comment Count Change ----------------------
 
 export const commentCountChangeSuccess = (postId, commentCount) => {
     return {
@@ -180,7 +235,7 @@ export const commentCountChangeFail = (error) => {
 
 export const commentCountChange = (postId, commentCount) => {
     return dispatch => {
-        axios.put('/posts/' + postId + '/commentCount.json' , commentCount)
+        axios.put('/posts/' + postId + '/commentCount.json', commentCount)
             .then(dispatch(commentCountChangeSuccess(postId, commentCount)))
             .catch(err => {
                 dispatch(commentCountChangeFail(err));
@@ -188,45 +243,9 @@ export const commentCountChange = (postId, commentCount) => {
     };
 };
 
-export const fetchCommentsStart = () => {
-    return {
-        type: actionTypes.FETCH_COMMENTS_START
-    };
-};
+// --------------- Clear comment -----------------------
 
-export const fetchCommentsSuccess = (comments) => {
-    return {
-        type: actionTypes.FETCH_COMMENTS_SUCCESS,
-        comments: comments
-    };
-};
-
-export const fetchCommentsFail = (error) => {
-    return {
-        type: actionTypes.FETCH_COMMENTS_FAIL,
-        error: error
-    };
-};
-
-export const fetchComments = (postId) => {
-    return dispatch => {
-        dispatch(fetchCommentsStart());
-        axios.get('/comments/' + postId +'.json')
-            .then(res => {
-                let comments = [];
-                for (let key in res.data) {
-                    comments.push({
-                        ...res.data[key],
-                        commentId: key
-                    });
-                };
-                dispatch(fetchCommentsSuccess(comments));
-            })
-            .catch(err => {
-                dispatch(fetchCommentsFail(err));
-            });
-    };
-};
+export const clearComment = () => (dispatch) => dispatch(clearCommentSuccess());
 
 export const clearCommentSuccess = () => {
     return {
@@ -234,5 +253,4 @@ export const clearCommentSuccess = () => {
     };
 };
 
-export const clearComment = () => (dispatch) => dispatch(clearCommentSuccess());
-    
+

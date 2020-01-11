@@ -5,7 +5,6 @@ export {
 export {
     auth,
     authCheckState,
-    setAuthRedirectPath,
     logout
 } from './authAction'
 
